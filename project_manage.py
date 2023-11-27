@@ -1,9 +1,23 @@
 # import database module
-
-# define a funcion called initializing
+from database import Table,Database,ReadCsv
+# define a function called initializing
 
 def initializing():
-    pass
+    read_person = ReadCsv('persons.csv')
+    my_person = read_person.read()
+    table1 = Table('persons', my_person)
+
+    read_login = ReadCsv('login.csv')
+    my_login = read_login.read()
+    table2 = Table('login', my_login)
+    # add all these tables to the database
+    DB = Database()
+    DB.insert(table1)
+    DB.insert(table2)
+    # print(DB.__dict__)
+    # print(table1)
+    print(table2)
+    return DB, table1, table2
 
 # here are things to do in this function:
 
@@ -13,13 +27,19 @@ def initializing():
 
     # see the guide how many tables are needed
 
-    # add all these tables to the database
 
+# define a function called login
 
-# define a funcion called login
-
-def login():
-    pass
+def login(table2):
+    print('-------Login-------')
+    user = input('Enter your username: ')
+    pas = input('Enter your password: ')
+    for x in table2.table:
+        # print(111,x)
+        # print(x['username'],user,x['password'],pas)
+        if x['username'] == user and x['password'] == pas:
+            return [x['ID'], x['role']]
+    return None
 
 # here are things to do in this function:
    # add code that performs a login task
@@ -39,8 +59,9 @@ def exit():
 
 # make calls to the initializing and login functions defined above
 
-initializing()
-val = login()
+database, persons, _login = initializing()
+val = login(_login)
+# print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
@@ -57,5 +78,5 @@ val = login()
 # elif val[1] = 'advisor':
     # see and do advisor related activities
 
-# once everyhthing is done, make a call to the exit function
+# once everything is done, make a call to the exit function
 exit()
