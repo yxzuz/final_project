@@ -1,5 +1,5 @@
-# import database module
-from database import Table, Database, ReadCsv
+
+from database import Table, Database, ReadCsv, WriteCsv
 
 
 # define a function called initializing
@@ -55,15 +55,17 @@ def login(DB):
 
 
 # define a function called exit
-def exit():
-    pass
-
-
 # here are things to do in this function:
 # write out all the tables that have been modified to the corresponding csv files
 # By now, you know how to read in a csv file and transform it into a list of dictionaries. For this project, you also need to know how to do the reverse, i.e., writing out to a csv file given a list of dictionaries. See the link below for a tutorial on how to do this:
 
 # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
+
+# def exit():
+#     x = WriteCsv('persons.csv', 'persons',['ID','first','last','type'])
+#
+
+
 
 
 val = login(DB)
@@ -85,4 +87,4 @@ print(val)
 # see and do advisor related activities
 
 # once everything is done, make a call to the exit function
-exit()
+# exit()
