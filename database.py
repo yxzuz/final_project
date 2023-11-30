@@ -31,6 +31,13 @@ class Database:
                 return x
         return None  # table was not found in DB
 
+    def __repr__(self):
+        s = ''
+        for table in self.database:
+            s += str(table)
+        print()
+        return s
+
 
 
 # add in code for a Table class
@@ -52,7 +59,6 @@ class Table:
     #                 my_filtered.append(keys)
     #     return my_filtered
     def __str__(self):
-
         return 'Table: ' + self.table_name + str(self.table)
 
 
