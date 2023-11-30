@@ -15,6 +15,13 @@ class ReadCsv:
             for r in rows:
                 self.my_csv_data.append(dict(r))
         return self.my_csv_data
+def WriteCsv(file_name, Db,table_name,head):
+    myFile = open(file_name, 'w', newline='')
+    writer = csv.writer(myFile)
+    writer.writerow(head)
+    for dictionary in Db.search(table_name):
+        writer.writerow(dictionary.values())
+    myFile.close()
 
 # add in code for a Database class
 class Database:
@@ -25,7 +32,7 @@ class Database:
         """insert table to DB"""
         self.database.append(table)
 
-    def find(self,table_name):
+    def search(self,table_name):
         for x in self.database:
             if x.table_name == table_name:
                 return x
