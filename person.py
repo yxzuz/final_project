@@ -11,6 +11,20 @@ class Admin:
             if self.__DB.search('login').table[i]['username'] == username:
                 return True
 
+    def __reset_password(self):
+        print('reset password')
+        user = input('Enter username: ')
+        if self.__check_user(user):
+            password = ''
+            for _ in range(4):
+                password += str(random.randint(1, 9))
+                for acc in self.__DB.search('login').table:
+                    acc['password'] = password
+                return True
+        else:
+            print('Invalid username')
+            print('Type Q to quit')
+
 
 
     def __add_user(self):
@@ -73,20 +87,28 @@ class Admin:
 
 
     def main(self):
-        print('Welcome Admin!')
-        print('What do you want to do?')
-        print('1.add user to database(1)\n2.delete user from database(2)\n3.reset password(3)')
-        x = int(input('Action: '))
-        if x == 1:
-            self.__add_user()
-            print('Adding user was successful')
-        elif x == 2:
-            # self.__delete_user()
-            if self.__delete_user():
-                print('Deleting user was successful.')
-            else:
-                print('No')
-            print(self.__DB.search('login').table)
+        x = ''
+        while x != 'Q':
+            print('Welcome Admin!')
+            print('What do you want to do?')
+            print('1.add user to database(1)\n2.delete user from database(2)\n3.reset password(3)')
+            print('Type Q to quit')
+            x = input('Action: ')
+            if x == '1':
+                self.__add_user()
+                print('Adding user was successful')
+            elif x == '2':
+                # self.__delete_user()
+                if self.__delete_user():
+                    print('Deleting user was successful.')
+                else:
+                    print('No')
+                print(self.__DB.search('login').table)
+            elif x == '3':
+                if self.__reset_password():
+                    print('Reset password was successful')
+                # print(self.__DB.search('login').table)
+            print('+------------------------------------+')
 
 
 
