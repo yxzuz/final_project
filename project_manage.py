@@ -1,6 +1,6 @@
 
 from database import Table, Database, ReadCsv, WriteCsv
-
+from person import Admin
 
 # define a function called initializing
 DB = Database()
@@ -33,8 +33,8 @@ def initializing():
     DB.insert(table5)
 
 initializing()
-for table in DB.database:
-    print(table.table_name)
+# for table in DB.database:
+#     print(table.table_name)
 
 # here are things to do in this function:
 
@@ -51,17 +51,17 @@ for table in DB.database:
 # ask a user for a username and password
 # returns [ID, role] if valid, otherwise returning None
 
-def login(DB):
-    print('-------Login-------')
-    user = input('Enter your username: ')
-    pas = input('Enter your password: ')
-    for x in DB.search('login').table:
-
-        # print(111,x)
-        # print(x['username'],user,x['password'],pas)
-        if x['username'] == user and x['password'] == pas:
-            return [x['ID'], x['role']]
-    return None
+# def login(DB):
+#     print('-------Login-------')
+#     user = input('Enter your username: ')
+#     pas = input('Enter your password: ')
+#     for x in DB.search('login').table:
+#
+#         # print(111,x)
+#         # print(x['username'],user,x['password'],pas)
+#         if x['username'] == user and x['password'] == pas:
+#             return [x['ID'], x['role']]
+#     return None
 
 
 
@@ -79,17 +79,25 @@ def login(DB):
 #     WriteCsv('project.csv', DB, 'project', ['ProjectID','Title','Lead','Member1','Member2','Advisor','Status'])
 #     WriteCsv('advisor_pending_request.csv', DB, 'advisor_pending_request', ['ProjectID','to_be_advisor','Response','Response_date'])
 #     WriteCsv('member_pending_request.csv', DB, 'member_pending_request', ['ProjectID','to_be_member','Response','Response_date'])
-#
 
-
-
+# temp = {
+#     "ProjectID": "1234567",
+#     "to_be_advisor": "Sii",
+#     "Response": "god",
+#     "Response_date": "Super God"
+# }
+# DB.search("advisor_pending_request").insert(temp)
+# print(DB.search("advisor_pending_request").table)
 # val = login(DB)
 # print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
-
-# if val[1] = 'admin':
-# see and do admin related activities
+run = Admin(DB)
+run.main()
+#
+# if val[1] == 'admin':
+   # run = Admin(DB)
+   # run.main()
 # elif val[1] = 'student':
 # see and do student related activities
 # elif val[1] = 'member':
