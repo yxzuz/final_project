@@ -20,7 +20,6 @@ class Admin:
                 return True
 
 
-
     def main(self):
         print('Welcome Admin!')
         print('What do you want to do?')
