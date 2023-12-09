@@ -1,9 +1,11 @@
+import sys
+
 from database import Database,Table
 # from project_manage import
-import random,sys
+import random
 
 class Admin:
-    def __init__(self,DB):
+    def __init__(self, DB):
         self.__DB = DB
 
     def __check_user(self,username):
@@ -12,7 +14,7 @@ class Admin:
                 return True
 
     def __reset_password(self):
-        print('reset password')
+        print('Reset password')
         user = input('Enter username: ')
         if self.__check_user(user):
             password = ''
@@ -61,27 +63,39 @@ class Admin:
                 "password": password,
                 "role": role}
         self.__DB.search('login').insert(my_dict)
-        # print(self.__DB.search('login'))
+        print(self.__DB.search('login'))
         return True
 
     def __delete_user(self):
         # print(self.__DB)
+        # print(self.__DB.search('login').table)
         print('Delete user from database')
-        while True:
+        username = None
+        while username != 'Q':
             username = input('Please enter the username: ')
-            if self.__check_user(username):
-                __confirm_del = int(input('Are you sure that you want to delete this user, yes(1)/no(2)? '))
-                if __confirm_del == 1:
-                    for i in range(len(self.__DB.search('login').table) - 1):
-                        if self.__DB.search('login').table[i]['username'] == username:
-                            # print(self.__DB.search('login').table[i])
-                            del self.__DB.search('login').table[i]
-                            return True
-                return False
-            if username == 'Q':
-                break
-            print('Invalid username')
-            print('Type Q to quit')
+            # print(self.__check_user(username))
+            if not self.__check_user(username):
+                print('Invalid username')
+                print('Type Q to quit')
+            elif self.__check_user(username):
+                __confirm_del = None
+                while __confirm_del not in ['1','2']:
+                    __confirm_del = input('Are you sure that you want to delete this user, yes(1)/no(2)? ')
+                if __confirm_del == '1':
+                    # print(self.__check_user(username))
+                    self.__DB.search('login').delete('username', username)
+                    print('Deleting user was successful.')
+                #     print(len(self.__DB.search('login').table)-1)
+                #     for i in range(len(self.__DB.search('login').table)):
+                #         print(self.__DB.search('login').table[i]['username'] == username)
+                        # if self.__DB.search('login').table[i]['username'] == username:
+                        #     print(self.__DB.search('login').table[i])
+
+                        #     print(self.__DB.search('login').table[i])
+                else:
+                    break
+            print('+------------------------------------+')
+
 
 
 
@@ -97,12 +111,10 @@ class Admin:
             if x == '1':
                 self.__add_user()
                 print('Adding user was successful')
+                print(self.__DB.search('login').table)
             elif x == '2':
-                # self.__delete_user()
-                if self.__delete_user():
-                    print('Deleting user was successful.')
-                else:
-                    print('No')
+                print(self.__DB.search('login').table)
+                self.__delete_user()
                 print(self.__DB.search('login').table)
             elif x == '3':
                 if self.__reset_password():
@@ -111,17 +123,6 @@ class Admin:
             print('+------------------------------------+')
 
 
-
-
-
-
-
-
-
-# class Student:
-#     def __init__(self):
-#         self.status =  'student'
-
-# m =Admin(DB)
-# m.main()
-# print(DB.search('login'))
+class Student:
+    def __init__(self):
+        pass

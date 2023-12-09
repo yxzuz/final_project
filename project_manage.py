@@ -92,12 +92,11 @@ initializing()
 # print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
-run = Admin(DB)
-run.main()
+
 #
 # if val[1] == 'admin':
-   # run = Admin(DB)
-   # run.main()
+run = Admin(DB)
+run.main()
 # elif val[1] = 'student':
 # see and do student related activities
 # elif val[1] = 'member':
