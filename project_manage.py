@@ -28,6 +28,7 @@ def initializing():
     # read_joined_table = ReadCsv('joined_person_login.csv')
     # my_ext = read_joined_table.read()
     my_ext = table1.join(table2, 'ID')
+    my_ext.table_name = 'joined_person_login'
     # table6 = Table('joined_person_login', my_ext)
 
     # add all these tables to the database
@@ -39,6 +40,9 @@ def initializing():
     DB.insert(my_ext)
 
 initializing()
+# for dict in DB.search('persons').table:
+#     for val in dict.values():
+#         print(val)
 # for table in DB.database:
 #     print(table.table_name)
 
@@ -79,12 +83,14 @@ initializing()
 
 # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
 
-# def exit():
-#     WriteCsv('persons.csv', DB,'persons',['ID','first','last','type'])
-#     WriteCsv('login.csv', DB, 'login', ['ID','username','password','role'])
-#     WriteCsv('project.csv', DB, 'project', ['ProjectID','Title','Lead','Member1','Member2','Advisor','Status'])
-#     WriteCsv('advisor_pending_request.csv', DB, 'advisor_pending_request', ['ProjectID','to_be_advisor','Response','Response_date'])
-#     WriteCsv('member_pending_request.csv', DB, 'member_pending_request', ['ProjectID','to_be_member','Response','Response_date'])
+def exit():
+    WriteCsv('persons.csv', DB,'persons',['ID','first','last','type'])
+    WriteCsv('login.csv', DB, 'login', ['ID','username','password','role'])
+    WriteCsv('project.csv', DB, 'project', ['ProjectID','Title','Lead','Member1','Member2','Advisor','Status'])
+    WriteCsv('advisor_pending_request.csv', DB, 'advisor_pending_request', ['ProjectID','to_be_advisor','Response','Response_date'])
+    WriteCsv('member_pending_request.csv', DB, 'member_pending_request', ['ProjectID','to_be_member','Response','Response_date'])
+    WriteCsv('joined_person_login.csv', DB, 'joined_person_login', ['ID','first','last','type','username','password','role'])
+
 
 # temp = {
 #     "ProjectID": "1234567",
@@ -94,7 +100,17 @@ initializing()
 # }
 # DB.search("advisor_pending_request").insert(temp)
 # print(DB.search("advisor_pending_request").table)
-
+# temp = {
+#         'ID':'1234',
+#     'first' :'Mary',
+#     'last':'kar',
+#     'type':'test',
+#     'username' : 'mart.R',
+#     'password': '1245',
+#     'role' : 'mroe'
+#     }
+# DB.search("joined_person_login").insert(temp)
+# print(DB.search("joined_person_login").table)
 # val = login(DB)
 # print(val)
 
@@ -125,4 +141,4 @@ initializing()
 # see and do advisor related activities
 
 # once everything is done, make a call to the exit function
-# exit()
+exit()
