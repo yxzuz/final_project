@@ -1,6 +1,6 @@
 
 from database import Table, Database, ReadCsv, WriteCsv
-from person import Admin
+from person import Admin,Student
 
 # define a function called initializing
 DB = Database()
@@ -25,12 +25,18 @@ def initializing():
     my_member_request = read_member_pending_request.read()
     table5 = Table('member_pending_request', my_member_request)
 
+    # read_joined_table = ReadCsv('joined_person_login.csv')
+    # my_ext = read_joined_table.read()
+    my_ext = table1.join(table2, 'ID')
+    # table6 = Table('joined_person_login', my_ext)
+
     # add all these tables to the database
     DB.insert(table1)
     DB.insert(table2)
     DB.insert(table3)
     DB.insert(table4)
     DB.insert(table5)
+    DB.insert(my_ext)
 
 initializing()
 # for table in DB.database:
@@ -88,17 +94,27 @@ initializing()
 # }
 # DB.search("advisor_pending_request").insert(temp)
 # print(DB.search("advisor_pending_request").table)
+
 # val = login(DB)
 # print(val)
+
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
 #
 # if val[1] == 'admin':
-run = Admin(DB)
-run.main()
-# elif val[1] = 'student':
-# see and do student related activities
+# run = Admin(DB)
+# run.main()
+# if val[1] == 'student':
+# run = Student(DB,['9898118', 'student'])
+# run.main()
+# print(type(DB.search('project').table))
+# print(type(DB.search('login').table))
+# print((type(DB.search('persons_joins_login').table)))
+# for i in DB.search('login').table:
+#     print(i)
+# for i in DB.search('joined_person_login').table:
+#     print(i)
 # elif val[1] = 'member':
 # see and do member related activities
 # elif val[1] = 'lead':
