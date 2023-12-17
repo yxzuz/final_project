@@ -61,8 +61,10 @@ class Table:
         self.table.delete(my_dict)
 
 
-    def update(self):
-        pass
+    def update(self,key,val):
+        for item in self.table:
+            item[key] = val
+
 
     def join(self, other_table, common_key):
         joined_table = Table(self.table_name + '_joins_' + other_table.table_name, [])
@@ -75,12 +77,39 @@ class Table:
                     joined_table.table.append(dict1)
         return joined_table
 
+
+
     def filter(self, condition):
         filtered_table = Table(self.table_name + '_filtered', [])
         for item1 in self.table:
             if condition(item1):
                 filtered_table.table.append(item1)
         return filtered_table
+
+    def __is_float(self, element):  # private method
+        if element is None:
+            return False  # it's not float
+        try:
+            float(element)
+            return True  # the conversion is successful
+        except ValueError:
+            return False  # If a ValueError is caught, it returns False, indicating that the element is not a float.
+
+    def aggregate(self, function, aggregation_key):
+        temps = []
+        for item1 in self.table:
+            if self.__is_float(item1[aggregation_key]):
+                temps.append(float(item1[aggregation_key]))  # change all item to be float
+            else:
+                temps.append(item1[aggregation_key])
+        return function(temps)
+
+    def delete(self,key,val):
+        for item in self.table:
+            if item[key] == val:
+                self.table.remove(item)
+                print(self.table)
+        return self.table
 
     def select(self, attributes_list):
         temps = []
