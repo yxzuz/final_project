@@ -1,5 +1,5 @@
 from datetime import datetime
-from database import Database, Table
+# from database import Database, Table
 # from project_manage import
 import random
 
@@ -615,65 +615,68 @@ class Project(Mail):
 
 
 # make sure all project proposal and report approved
-class Evaluation:
-    weight_func = 0.4
-    weight_creativity = 0.3
-    weight_usability = 0.2
-    weight_adherence = 0.1
+class Evaluation(Mail):
 
-    def __init__(self,db,project):
-        self.__db = db
-        self.__project = project
-        self.__evaluation = self.__db.search('evaluation')
-        # self.__evaluation.insert({'ProjectID': self.__project['ProjectID'],
-        #                           'Title': self.__project["Title"],
-        #                           'Functionality':'None',
-        #                           'Creativity':'None',
-        #                           'Usability':'None',
-        #                           'Adherence_to_requirements': 'None',
-        #                           'Total': 'None'})
+
+    # def __init__(self,db,project):
+    #     self.__db = db
+    #     self.__project = project
+    #     self.__evaluation = self.__db.search('evaluation')
+
 
 
     def view_criteria(self):
-        print("""Functionality 40%
-5: Excellent 4: Good, 3: Satisfactory,2: Needs Improvement,1: Poor
-
-Creativity 30%
-5: Highly Creative, 4: Creative 3: Average 2: Limited Creativity 1: Lacks Creativity
-
-Usability 20%
-5: Very User-Friendly 4: User-Friendly3: Acceptable Usability,2: Some Usability Issues,1: Poor Usability
-
-Adherence to Requirements 10%
-5: Fully Adheres,4: Mostly Adheres,3: Partial Adherence,2: Limited Adherence,1: Does Not Adhere""")
+        print('-Criteria-')
+        print("""-Functionality 20%
+-Creativity 20%
+-Effectiveness 20%
+-Relavance 20%
+-Impact 20%
+Need 50% to pass the project""")
+        print('+------------------------------------+')
 
 
+    def rate_criteria(self,project_id):  # passed
+        print(self.evaluation)
+        temp = []
+        this_project =self.evaluation.filter(lambda x: x['ProjectID'] == project_id)
+        print(this_project)
+        for i in range(1,21):
+            temp.append(str(i))
+        functionality = _check_input(temp, 'Enter functionality score(1-20%): ')
+        creativity = _check_input(temp, 'Enter creativity score(1-20%): ')
+        effectiveness = _check_input(temp, 'Enter usability score(1-20%): ')
+        relavance = _check_input(temp, 'Enter relavance score(1-20%): ')
+        impact = _check_input(temp, 'Enter impact score(1-20%): ')
+        print(self.evaluation)
+        temp2 = [int(functionality),int(creativity),int(effectiveness),int(relavance),int(impact)]
+        calculated = self.total(this_project,temp2)
+        if len(this_project.table) == 0:
+            self.evaluation.insert({'ProjectID': project_id,
+                                      'Functionality': functionality,
+                                      'Creativity': creativity,
+                                      'Effectiveness':effectiveness,
+                                      'Relavance': relavance,
+                                    'Impact': impact,
+                                      'Total': 'None'})
+        else:
+            this_project.update('Functionality', functionality)
+            this_project.update('Creativity', creativity)
+            this_project.update('Effectiveness', effectiveness)
+            this_project.update('Relavance', relavance)
+            this_project.update('Impact', impact)
 
-    def rate_criteria(self,project_id):
-        choice = _check_input(['1','2','3','4'],'Which criteria do you want to modify?')
-        if choice == '1':
-            print('Functionality 40%\n5: Excellent 4: Good, 3: Satisfactory,2: Needs Improvement,1: Poor')
-            functionality  = _check_input(['1', '2', '3', '4','5'], 'Enter: ')
-            self.__evaluation.update('Functionality',int(functionality))
 
-        if choice == '2':
-            print('Creativity 30%\n5: Highly Creative, 4: Creative 3: Average 2: Limited Creativity 1: Lacks Creativity')
-            creativity = _check_input(['1', '2', '3', '4', '5'], 'Enter: ')
-            self.__evaluation.update('Creativity', int(creativity))
+        return calculated
 
-        if choice == '3':
-            print('Usability 20%\n5: Very User-Friendly 4: User-Friendly3: Acceptable Usability,2: Some Usability Issues,1: Poor Usability')
-            usability = _check_input(['1', '2', '3', '4', '5'], 'Enter: ')
-            self.__evaluation.update('Usability', int(usability))
-
-
-        if choice == '4':
-            print('Adherence to Requirements 10%\n5: Fully Adheres,4: Mostly Adheres,3: Partial Adherence,2: Limited Adherence,1: Does Not Adhere')
-            adherence_to_requirements = _check_input(['1', '2', '3', '4', '5'], 'Enter: ')
-            self.__evaluation.update('Adherence_to_requirements', int(adherence_to_requirements))
-
-        print(self.__evaluation)
-
+    def total(self,this_project,score):
+        total = sum(score)
+        print(total)
+        print(f'Total score = {total}/100')
+        this_project.update('Total', total)
+        if total == 50:
+            return True  # passed
+        return False
 
 
 
@@ -897,15 +900,15 @@ class Student(Project, Mail):
             print('+------------------------------------+')
 
 
-
-class Faculty(Project,Mail,Evaluation):
+# Mail,Project,Evaluation
+class Faculty(Project,Evaluation):
     def __init__(self, DB, info):
         # access self.DB self.member_pending
         self.__DB = DB
         self.id = info[0]
 
         self.__login_db = DB.search('login')
-
+        self.__evaluation = DB.search('evaluation')
         self.__advisor_pending = DB.search('advisor_pending_request')
         self.__ext = DB.search('joined_person_login')
         self.__faculty_info = self.__ext.filter(lambda x: x['ID'] == self.id).table[0]
@@ -917,6 +920,12 @@ class Faculty(Project,Mail,Evaluation):
         self.status = self.__faculty_info['role']
         self.__project = DB.search('project').filter(lambda x: x['Advisor'] == self.name)
 
+    @property
+    def project(self):
+        return self.__project
+    @property
+    def evaluation(self):
+        return self.__evaluation
     @property
     def login_db(self):
         return self.__login_db
@@ -972,28 +981,28 @@ class Faculty(Project,Mail,Evaluation):
             print(self.status)
             print(f'Welcome {self.firstname} {self.lastname[0]}.')
             print('What do you want to do?')
-            print('1.View my project\n2.Modify project\n3.My mailbox\n4.Evaluate project')
+            print('1.Modify project\n3.My mailbox\n3.Evaluate project')
             choice = _check_input_v2(['1', '2', '3','4'], 'Action: ')
             print('+------------------------------------+')
-            # if choice == 'Q':
-            #     break
-            # if choice == '1':
-
-            # print(my_project)
 
             if choice == 'Q':
                 break
-            if choice == '2':
-                my_project = self.view_my_project()
-                super().project_menu_2(my_project)
+            if choice == '1':
+                if self.status == 'advisor':
+                    my_project = self.view_my_project()
+                    super().project_menu_2(my_project)
+                else:
+                    print('You can\'t access not existance porject!')
 
-            if choice == '3':
+            if choice == '2':
                 self.mailbox('faculty')
                 # print(self.status)
             #
-            if choice == '4':
+            if choice == '3':
                 if Faculty.check_eval(self.__eval_projects):
                     project = self.pick_to_eval()
                     # print(project['ProjectID'])
                     super().view_criteria()
-                    super().rate_criteria(project['ProjectID'])
+                    project_score = super().rate_criteria(project['ProjectID'])
+                    print(project_score)
+            print('+------------------------------------+')
