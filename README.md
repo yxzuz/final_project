@@ -14,26 +14,20 @@
     - Description: keep track of evaluate request to faculty
     - Purposes:
   - member_pending_request.csv
-    - Description:
-    - Purposes:
+    - Description: keep track member pending
   - person.py
-    - Description:
-    - Purposes:
+    - Description: contains all class
   - person.csv
-    - Description:
-    - Purposes:
+    - Description:  persons data
   - project.csv
-    - Description:
-    - Purposes:
+    - Description: project data
   - project_manage.py
-    - Description:
-    - Purposes:
+    - Description: user interface
   - project_proposal.csv
-    - Description:
-    - Purposes:
+    - Description: when project was modified keep ('project' proposal')
   - project_report.csv
-    - Description:
-    - Purposes:
+    - Description: when project was modified('project' report')
+
 
 * How to compile and run:
     - use run = Student(DB,['4788888', 'student']) then run.main() in project_manage.py
