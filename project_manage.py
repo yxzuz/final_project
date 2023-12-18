@@ -80,20 +80,29 @@ initializing()
 # returns [ID, role] if valid, otherwise returning None
 
 
+# def login(db):
+#     print('-------Login-------')
+#     user = _check_input(_login_user, 'Enter your username: ', 'Please enter valid username')
+#     pas = _check_input(_login_pass, 'Enter your password: ', 'Please enter valid password')
+#     for x in db.search('login').table:
+#         if x['username'] == user and x['password'] == pas:
+#             if x['role'] == 'lead' or x['role'] == 'member':
+#                 role = 'student'
+#                 return [x['ID'], role]
+#             elif x['role'] == 'advisor' or x['role'] == 'faculty':
+#                 role = 'faculty'
+#                 return [x['ID'], role]
+#             else:
+#                 return [x['ID'], x['role']]
+#     return None
+
 def login(db):
     print('-------Login-------')
     user = _check_input(_login_user, 'Enter your username: ', 'Please enter valid username')
     pas = _check_input(_login_pass, 'Enter your password: ', 'Please enter valid password')
     for x in db.search('login').table:
         if x['username'] == user and x['password'] == pas:
-            if x['role'] == 'lead' or x['role'] == 'member':
-                role = 'student'
-                return [x['ID'], role]
-            elif x['role'] == 'advisor' or x['role'] == 'faculty':
-                role = 'faculty'
-                return [x['ID'], role]
-            else:
-                return [x['ID'], x['role']]
+            return [x['ID'], x['role']]
     return None
 
 # define a function called exit
@@ -115,25 +124,25 @@ def exit():
     WriteCsv('evaluation.csv', DB, 'evaluation', ['ProjectID', 'Functionality', 'Creativity', 'Effectiveness', 'Relevance', 'Impact', 'Total'])
     WriteCsv('mail.csv', DB, 'mail', ['ProjectID', 'evaluation_team', 'Date_sent'])
 
-# val = login(DB)
+val = login(DB)
 
-# print(val)
+print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
 # due to the errors I have to return login in such weird manner but my class is divide into these three sub cultures
 # run = Student(DB,['4788888', 'student'])
-# if val[1] == 'admin':
-#     run = Admin(DB, val)
-#     run.main()
-# elif val[1] == 'student':
-#     # for all students members and lead
-#     run = Student(DB, val)
-#     run.main()
-# elif val[1] == 'faculty':
-#     # for both faculty and advisor (same class)
-#     run = Faculty(DB, val)
-#     run.main()
+if val[1] == 'admin':
+    run = Admin(DB, val)
+    run.main()
+elif val[1] == 'lead' or val[1] == 'member' or val[1] == 'student' :
+    # for all students members and lead
+    run = Student(DB, val)
+    run.main()
+elif val[1] == 'advisor' or val[1] == 'faculty':
+    # for both faculty and advisor (same class)
+    run = Faculty(DB, val)
+    run.main()
 #LEAD
 # run = Student(DB,['9898118', 'student'])
 
@@ -157,6 +166,6 @@ def exit():
 # run =Faculty(DB,['2567260', 'faculty'])
 # run.main()
 #my login does not work so use id and person type advisor use faculty and faculty also use faculty (same class)
-run = Faculty(DB, ['8466074', 'faculty'])
-run.main()
+# run = Faculty(DB, ['8466074', 'faculty'])
+# run.main()
 exit()

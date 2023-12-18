@@ -597,7 +597,7 @@ class Project:
                     self.project_status = 'Approved'
                 else:
                     self.project_status = 'Declined'
-                self.__project.update('Status', self.project_status)
+                my_project.update('Status', self.project_status)
 
     def change_title(self):
         ask = input('Enter project name: ')
@@ -664,7 +664,7 @@ class Project:
                 print(self.__project_report)
 
         else:
-            while True:
+
                 print('Which part do you want to modify?')
                 print("1.Proposal\n2.Report")  # comment and status are for advisor
                 pick = _check_input_v2(['1', '2'], 'Enter: ')
@@ -675,8 +675,8 @@ class Project:
                     print('What field do you want to modify?')
                     print("1.Abstract\n2.Goals\n3.Timeline\n4.Budget")  # comment and status are for advisor
                     choice = _check_input_v2(['1', '2', '3', '4'], 'Action: ')
-                    if choice == 'Q':
-                        break
+                    # if choice == 'Q':
+                    #     break
                     if choice == '1':
                         long_text(my_proposal, 'Abstract')
                     elif choice == '2':
