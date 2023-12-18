@@ -46,8 +46,9 @@ def _generate_thing(len_thing, lower_bound, upper_bound):
 
 
 class Admin:
-    def __init__(self, db):
+    def __init__(self, db, info):
         self.__db = db
+        self.info = info
 
     def __check_user(self, username):
         # check whether the username existed
@@ -136,7 +137,7 @@ class Admin:
         while x != 'Q':
             print('Welcome Admin!')
             print('What do you want to do?')
-            print('1.add user to database\n2.delete user from database\n3.reset password\n4.update table')
+            print('1.add user to database\n2.delete user from database\n3.reset password\n4.update table\n5.see rows')
             print('Type Q to quit')
             x = input('Action: ')
             print('+------------------------------------+')
@@ -500,7 +501,7 @@ class Project:
     # for member and lead-------------------------------
 
     def __initialization(self, my_project):
-        print(self.title, self.member1, self.advisor, self.project_status, self.__projectID)
+        # print(self.title, self.member1, self.advisor, self.project_status, self.__projectID)
         self.__project = my_project
         self.__projectID = self.__project.table[0]['ProjectID']
         self.title = self.__project.table[0]['Title']
@@ -547,7 +548,7 @@ class Project:
         print('+------------------------------------+')
 
     def project_menu_2(self, my_project):  # advisor version
-        self.__initialization(my_project)
+        # self.__initialization(my_project)
         # print(self.__project)
         print('What do you want to do?')
         print("1.Modify project\n2.Change project status")
@@ -645,6 +646,7 @@ class Project:
     def modify_project(self, my_project, role=''):
         # Project table needs to be updated
         # project proposal
+        # print(my_project)
         if role == 'advisor':
             print('Editing project fields...')
             self.view_project()
@@ -833,7 +835,7 @@ class Student(Project, Mail):
             print()
 
     def __initialization(self, my_project):
-        print(self.title, self.member1, self.advisor, self.project_status)
+        # print(self.title, self.member1, self.advisor, self.project_status)
         self.__project = my_project
         self.__projectID = self.__project.table[0]['ProjectID']
         self.title = self.__project.table[0]['Title']
@@ -845,7 +847,7 @@ class Student(Project, Mail):
         self.__project_proposal = self.__DB.search('project_proposal').filter(
             lambda x: x['ProjectID'] == self.__projectID)
         self.__project_report = self.__DB.search('project_report').filter(lambda x: x['ProjectID'] == self.__projectID)
-        print(self.title, self.member1, self.advisor, self.project_status)
+        # print(self.title, self.member1, self.advisor, self.project_status)
 
     def main(self):
         if self.status == 'lead':
@@ -946,7 +948,7 @@ class Faculty(Project):
             print()
 
     def __initialization(self, my_project):
-        print(43, self.title, self.member1, self.advisor, self.project_status)
+        # print(43, self.title, self.member1, self.advisor, self.project_status)
         self.__project = my_project
         self.__projectID = self.__project.table[0]['ProjectID']
         self.title = self.__project.table[0]['Title']
@@ -958,7 +960,7 @@ class Faculty(Project):
         self.__project_proposal = self.__db.search('project_proposal').filter(
             lambda x: x['ProjectID'] == self.__projectID)
         self.__project_report = self.__db.search('project_report').filter(lambda x: x['ProjectID'] == self.__projectID)
-        print(self.title, self.member1, self.advisor, self.project_status)
+        # print(self.title, self.member1, self.advisor, self.project_status)
 
     @staticmethod
     def check_eval(eval_projects):
@@ -969,15 +971,11 @@ class Faculty(Project):
     def main(self):
         if self.status == 'advisor':
             self.__initialization(self.__project)
-        print('faculty', self.__faculty_info)
-        print(self.__eval_projects)
-        print(self.__db)
-        print('status', self.status)
         while True:
             if self.status == 'advisor':
                 self.__project = self.__db.search('project').filter(lambda x: x['Advisor'] == self.name)
             print('status', self.status)
-            print('faculty', self.__faculty_info)
+            # print('faculty', self.__faculty_info)
             print(f'Welcome {self.firstname} {self.lastname[0]}.')
             print('What do you want to do?')
             print('1.Modify project\n2.My mailbox\n3.Evaluate project')

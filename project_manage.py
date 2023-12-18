@@ -2,10 +2,12 @@
 from database import Table, Database, ReadCsv, WriteCsv
 
 from person import Admin, Student, Faculty, Evaluation
+from person import _check_input
 
 # define a function called initializing
 DB = Database()
-
+_login_user = []
+_login_pass = []
 
 def initializing():
     read_person = ReadCsv('persons.csv')
@@ -58,6 +60,11 @@ def initializing():
     DB.insert(evaluation)
     DB.insert(mail)
 
+    for i in DB.search('login').table:
+        _login_user.append(i['username'])
+    for i in DB.search('login').table:
+        _login_pass.append(i['password'])
+
 
 initializing()
 
@@ -75,11 +82,18 @@ initializing()
 
 def login(db):
     print('-------Login-------')
-    user = input('Enter your username: ')
-    pas = input('Enter your password: ')
+    user = _check_input(_login_user, 'Enter your username: ', 'Please enter valid username')
+    pas = _check_input(_login_pass, 'Enter your password: ', 'Please enter valid password')
     for x in db.search('login').table:
         if x['username'] == user and x['password'] == pas:
-            return [x['username'], x['role']]
+            if x['role'] == 'lead' or x['role'] == 'member':
+                role = 'student'
+                return [x['ID'], role]
+            elif x['role'] == 'advisor' or x['role'] == 'faculty':
+                role = 'faculty'
+                return [x['ID'], role]
+            else:
+                return [x['ID'], x['role']]
     return None
 
 # define a function called exit
@@ -101,37 +115,48 @@ def exit():
     WriteCsv('evaluation.csv', DB, 'evaluation', ['ProjectID', 'Functionality', 'Creativity', 'Effectiveness', 'Relevance', 'Impact', 'Total'])
     WriteCsv('mail.csv', DB, 'mail', ['ProjectID', 'evaluation_team', 'Date_sent'])
 
-val = login(DB)
+# val = login(DB)
 
+# print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
+# due to the errors I have to return login in such weird manner but my class is divide into these three sub cultures
 # run = Student(DB,['4788888', 'student'])
-if val[1] == 'admin':
-    run = Admin(DB, val)
-    run.main()
-if val[1] == 'student':
-    # run = Student(DB,['4788888', 'student'])
-    run = Student(DB, val)
-    run.main()
-elif val[1] == 'member':
-    # see and do member related activities
-    run = Student(DB, val)
-    run.main()
-    # run = Student(DB,['4788888', 'student'])
-elif val[1] == 'lead':
-    # see and do lead related activities
-    run = Student(DB, val)
-    run.main()
-    # run = Student(DB,['4788888', 'student'])
-elif val[1] == 'faculty':
-    # see and do faculty related activities
-    run = Faculty(DB, val)
-    run.main()
-elif val[1] == 'advisor':
-    # see and do advisor related activities
-    run = Faculty(DB, val)
-    run.main()
+# if val[1] == 'admin':
+#     run = Admin(DB, val)
+#     run.main()
+# elif val[1] == 'student':
+#     # for all students members and lead
+#     run = Student(DB, val)
+#     run.main()
+# elif val[1] == 'faculty':
+#     # for both faculty and advisor (same class)
+#     run = Faculty(DB, val)
+#     run.main()
+#LEAD
+# run = Student(DB,['9898118', 'student'])
 
-# once everything is done, make a call to the exit function
+#mem1 ,Manuel.N,1244,student
+# run = Student(DB,['5662557', 'student'])
+# run.main()
+#mem2
+# run = Student(DB,['5687866', 'student'])
+
+#other project lead
+# run = Student(DB,['3938213', 'student'])
+
+#faculty
+# run = Faculty(DB, ['8466074', 'faculty'])
+#
+#eval
+# run =Faculty(DB,['2472659', 'faculty'])
+
+#eval2
+
+# run =Faculty(DB,['2567260', 'faculty'])
+# run.main()
+#my login does not work so use id and person type advisor use faculty and faculty also use faculty (same class)
+run = Faculty(DB, ['8466074', 'faculty'])
+run.main()
 exit()
