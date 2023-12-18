@@ -114,7 +114,8 @@ run.main()
 * List of missing features and outstanding bugs:
    - login should get role from login.csv not by user simply typing (I have fixed and committed code)
    - class Project method: modify_project should fix missing while looping (I have fixed and committed code)
-   - project status(when advisor updated it) it affected whole table(fixed)
+   - project status(when advisor updated it) it affected whole table(I have fixed and committed code)
+   - admin cannot see row
 
 
 
