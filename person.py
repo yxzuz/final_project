@@ -230,7 +230,7 @@ class Mail:
         # Member_pending_request and Advisor_pending_request  table needs to be updated
         # see if someone join the project
         # when join make sure the project is not full
-        print('omg', role)
+        # print('omg', role)
         if role != 'faculty' and role != 'advisor':
             print('All inboxes')
             print(f'You got {len(my_mail.table)} message!')
@@ -376,10 +376,10 @@ class Mail:
             print(reply)
             print(len(reply.table) > 0)
             if len(reply.table) > 0:
-                print(11111)
+                # print(11111)
                 print('Your project already has an advisor!')
             else:
-                print(300)
+                # print(300)
                 if len(__advisor_pend) > 0:  # second time have to check whether request had sent to this faculty
                     for user in __advisor_pend:
                         if user['Response'] == 'None':
