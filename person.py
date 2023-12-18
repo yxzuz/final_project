@@ -13,15 +13,7 @@ response = now.strftime("%d/%m/%Y %H:%M:%S")
 def long_text(my_table, header):
     print(f'-{header}-')
     txt = input(': ')
-    # my_table
-    # my_table = table.filter(lambda x:x['ProjectID'] == ProjectID)
-    # if len(my_table.table) == 0:
-    #     print(1)
-    #     return False
-    print(my_table)
     my_table.update(header, txt)
-    print(my_table)
-    # return True
 
 
 def _check_input(input_choices, txt, wrong_input_txt=''):
@@ -66,11 +58,10 @@ class Admin:
     def reset_password(self, user):
         if self.__check_user(user):
             password = _generate_thing(4, 1, 9)
-            # print(self.__db.search('login'))
+
             filtered = self.__db.search('login').filter(lambda x: x['username'] == user)
             filtered.update('password', password)
             self.__db.search('joined_person_login').filter(lambda x: x['username'] == user).update('password', password)
-            # print(self.__db.search('login'))
             print('Reset password was successful')
         else:
             print('Invalid username')
@@ -83,7 +74,6 @@ class Admin:
         print('Generating username...')
         username = name.capitalize() + '.'
         username += last_name[0].capitalize()
-        # print(username)
         print('Generating password...')
         password = _generate_thing(4, 1, 9)
         role = _check_input(['1', '2'], 'Pick user\'s role, student(1)/faculty(2): ', 'Please enter valid choice')
@@ -155,32 +145,32 @@ class Admin:
                 print('Generating User\'s id...')
                 self.add_new_user()
                 print('Adding user was successful')  # might add this in add_new_user
-                # print(self.__DB.search('login').table)
+
             elif x == '2':
                 print('Delete user from database')
-                # print(self.__DB.search('login').table)
+
                 self.delete_user()
-                # print(self.__DB.search('login').table)
+
             elif x == '3':
                 user = input('Enter username: ')
                 self.reset_password(user)
-                # print(self.__DB.search('login').table)
+
             elif x == '4':
                 print('Update table')
 
-                table_name = _check_input(['persons', 'login', 'project', 'advisor_pending_request', 'member_pending_request', 'joined_person_login', 'project_proposal', 'project_report', 'evaluation', 'mail'], 'Enter table name: ', 'Please enter valid table name')
+                table_name = _check_input(
+                    ['persons', 'login', 'project', 'advisor_pending_request', 'member_pending_request',
+                     'joined_person_login', 'project_proposal', 'project_report', 'evaluation', 'mail'],
+                    'Enter table name: ', 'Please enter valid table name')
 
                 if table_name != 'login':
                     __id_list = self.__find_vals(table_name, 'ProjectID')
-                    # print(55,__id_list)
                     condition = _check_input(__id_list, 'Enter project\'s id: ', 'Please enter valid id')
 
                 else:
                     __id_list = self.__find_vals('login', 'ID')
-                    # print(55,__id_list)
                     condition = _check_input(
                         __id_list, 'Enter user\'s id: ', 'Please enter valid id')
-                    # print(self.__db.search('login').table[0].values())
 
                 keys = self.__find_keys(table_name)
                 # print(keys)
@@ -193,7 +183,8 @@ class Admin:
                     my_table = self.__db.search(table_name).filter(lambda z: z['ID'] == condition)
                 my_table.update(temp2, val)
             elif x == '5':
-                table_name = _check_input(['persons', 'login', 'project', 'advisor_pending_request', 'member_pending_request',
+                table_name = _check_input(
+                    ['persons', 'login', 'project', 'advisor_pending_request', 'member_pending_request',
                      'joined_person_login', 'project_proposal', 'project_report', 'evaluation', 'mail'],
                     'Enter table name: ', 'Please enter valid table name')
                 keys = self.__find_keys(table_name)
@@ -201,9 +192,6 @@ class Admin:
                 key = _check_input(keys, 'Enter key: ', 'Please enter valid key')
                 val = input('Enter key value for filter: ')
                 print(self.__show_row(table_name, key, val))
-
-
-            # print(self.__db.search('login').table)
             print('+------------------------------------+')
 
 
@@ -221,33 +209,28 @@ class Mail:
         self.username = user_info['username']
         self.id = user_info['ID']
         self.name = f"{user_info['first']} {user_info['last']}"
-        self.__eval_team = self.__db.search('login').filter(lambda x: x['role'] == 'faculty')  # not advisor can eval project
+        self.__eval_team = self.__db.search('login').filter(
+            lambda x: x['role'] == 'faculty')  # not advisor can eval project
         self.__random = []
 
     def sent_eval_notification(self, eval_team, project_id):
-        # print(17055,self.DB.search('mail'))
         for user in eval_team:
             print(user['username'])
             temp = {'ProjectID': project_id,
                     'evaluation_team': user['username'],
                     'Date_sent': response}
             self.__db.search('mail').insert(temp)
-        # print('Messages sent successfully.')
 
-    # print(self.DB.search('mail'))
-    # print(eval_team)
     def mailbox(self, role, my_mail):  # roles are lead, student, advisor, faculty
         # See who has responded to the requests sent out
         # Send requests to potential members
-        # NOTE Send out requests to a potential advisor # ; can only do one at a time and after all potential members have accepted or denied the requests
+        # NOTE Send out requests to a potential advisor
+        #  can only do one at a time and after all potential members have accepted or denied the requests
         # Member_pending_request and Advisor_pending_request  table needs to be updated
         # see if someone join the project
         # when join make sure the project is not full
         print('omg', role)
         if role != 'faculty' and role != 'advisor':
-            # __my_mail = self.__member_pending.filter(
-            #     lambda x: x['to_be_member'] == self.user_info['username']).filter(
-            #     lambda x: x['Response'] == 'None')
             print('All inboxes')
             print(f'You got {len(my_mail.table)} message!')
             if len(my_mail.table) > 0:
@@ -277,12 +260,6 @@ class Mail:
                                 msg['Response'] = 'Declined'
 
         else:  # fac and advisor
-            # print(1111)
-            # __my_mail = self.__advisor_pending.filter(
-            #     lambda x: x['to_be_advisor'] == self.faculty_info['username']).filter(lambda x: x['Response'] == 'None')
-            # print(__my_mail)
-            # print(__my_mail.table)
-            # print(len(__my_mail.table))
             __noti = self.__db.search('mail').filter(lambda x: x['evaluation_team'] == self.username)
             print(34567, __noti)
             msg = len(my_mail.table) + len(__noti.table)
@@ -296,7 +273,8 @@ class Mail:
                 if choice == '1':
                     if len(__noti.table) > 0:
                         for noti in __noti.table:
-                            print(f"Date: {noti['Date_sent']}\nYou are on Project: {noti['ProjectID']} evaluation team.")
+                            print(
+                                f"Date: {noti['Date_sent']}\nYou are on Project: {noti['ProjectID']} evaluation team.")
 
                     for msg in my_mail.table:
                         if msg['Response'] == 'Declined':
@@ -304,9 +282,8 @@ class Mail:
                         # print(msg)
                         __my_potential_project = self.__db.search('project').filter(
                             lambda x: x['ProjectID'] == msg['ProjectID'])
-                        #         print(111,msg)
+
                         for project_info in __my_potential_project.table:  # loop in request to join
-                            # print(222, project_info)
                             print(f"-> {project_info['Lead']} invites you to join project {project_info['Title']}")
                             choice2 = _check_input(['1', '2'], 'Accept or Deny this request,yes(1)/no(2): ')
 
@@ -319,7 +296,7 @@ class Mail:
                                 self.__add_member(project_info, role)
                                 status = self.__change_status('advisor')
                                 return status
-                                break
+
                             elif choice2 == '2':
                                 msg['Response'] = 'Declined'
                                 msg['Response_date'] = response
@@ -328,44 +305,6 @@ class Mail:
                         print(self.__advisor_pending)
                         print(self.__member_pending)
                         print(self.__project)
-
-    # second version
-    # if len(__my_mail.table) > 0:
-    #     choice = _check_input(['1', '2'], 'View messages?,yes(1)/no(2): ')
-    #     if choice == '1':
-    #         for msg in __my_mail.table:
-    #             if msg['Response'] == 'Declined':
-    #                 break
-    #             # print(msg)
-    #             __my_potential_project = self.DB.search('project').filter(
-    #                 lambda x: x['ProjectID'] == msg['ProjectID'])
-    #             #         print(111,msg)
-    #             for project_info in __my_potential_project.table:  # loop in request to join
-    #                 # print(222, project_info)
-    #                 print(
-    #                     f"-> {project_info['Lead']} invites you to join project {project_info['Title']}")
-    #                 choice2 = _check_input(['1', '2'], 'Accept or Deny this request,yes(1)/no(2): ')
-    #
-    #                 if choice2 == '1':
-    #                     msg['Response'] = 'Accepted'
-    #                     print(__my_mail)
-    #                     # __my_mail.update('Response_date',response)
-    #                     msg['Response_date'] = response
-    #                     print(msg['Response_date'])
-    #                     self.__add_member(project_info, role)
-    #                     self.__change_status('advisor')
-    #
-    #                     # print(self.status)
-    #
-    #                     break
-    #                 elif choice2 == '2':
-    #                     msg['Response'] = 'Declined'
-    #                     msg['Response_date'] = response
-    #
-    #             # print(__my_potential_project)
-    #             print(self.advisor_pending)
-    #             # print(self.__member_pending)
-    #             # print(self.project)
 
     # lead---------------------
     def send(self, project):
@@ -416,10 +355,6 @@ class Mail:
                         if ask == 'Q':
                             break
                         elif ask == '1':
-                            # update member pending table
-                            # for pend in self.__member_pending.filter(lambda x:x['ProjectID']):
-                            #     if pend['"to_be_member"'] != student['username']:2
-
                             pending = {"ProjectID": _project_id,
                                        "to_be_member": student['username'],
                                        "Response": 'None',
@@ -431,15 +366,14 @@ class Mail:
                             break
         # Send out requests to a potential advisor;
         # can only do one at a time and after all potential members have accepted or denied the requests
-        # print(self.__advisor_pending)
-        # print(__advisor_pend)
 
         if choice == '2':
             print(__advisor_pend)
             # old req was view and response(accept/decline)
-            reply = self.__advisor_pending.filter(lambda x: x['Response'] != 'None').filter(lambda x: x['ProjectID'] == _project_id)
+            reply = self.__advisor_pending.filter(lambda x: x['Response'] != 'None').filter(
+                lambda x: x['ProjectID'] == _project_id)
             print(reply)
-            print(len(reply.table)>0)
+            print(len(reply.table) > 0)
             if len(reply.table) > 0:
                 print(11111)
                 print('Your project already has an advisor!')
@@ -454,7 +388,8 @@ class Mail:
                     for teacher in self.__ext.filter(lambda x: x['role'] == 'faculty' or x['role'] == 'advisor').select(
                             ['first', 'last', 'username']):
                         if teacher['username'] not in temp:
-                            print(f"first: {teacher['first']}, lastname: {teacher['last']}, username: {teacher['username']}")
+                            print(
+                                f"first: {teacher['first']}, lastname: {teacher['last']}, username: {teacher['username']}")
                             ask = _check_input_v2(['1', '2'],
                                                   'Do you want to invite this user into your project?,yes(1)/no(2): ')
                             if ask == 'Q':
@@ -475,26 +410,20 @@ class Mail:
                     # print('After', self.__advisor_pending)
                 temp.clear()
 
-
-
     @staticmethod
     def __decline_request(my_mail):  # automatically decline after user accept request to join project
         for mail in my_mail.table:
             if mail['Response'] == 'None':
                 mail['Response'] = 'Declined'
                 mail['Response_date'] = response
-                # print(my_mail)
-
 
     # for eval
     def random_team(self):
-        while len(self.__random) != 3: # faculty members will evaluate their project
+        while len(self.__random) != 3:  # faculty members will evaluate their project
             picked = random.choice(self.__eval_team.table)
             if picked not in self.__random:
                 self.__random.append(picked)
-        print(len(self.__eval_team.table))
         print(self.__random)
-
 
     # for lead-------------------------------
     def __add_member(self, project_info, role):
@@ -513,8 +442,8 @@ class Mail:
         print(self.__login_db)
         self.__login_db.filter(lambda x: x['ID'] == self.id).update('role', role)
         self.__ext.filter(lambda x: x['ID'] == self.id).update('role', role)
-        # print(self.__login_db)
         return True
+
 
 class Project:
     def __init__(self, db):
@@ -530,12 +459,10 @@ class Project:
         self.__project_proposal = db.search('project_proposal')
         self.__project_report = db.search('project_report')
 
-
     # for lead initialization-------------------------------
     def create_project(self, title):
         print('Creating project...')
         # only students can create project
-        # print(self.__projectID)
         print(self.title)
         self.title = title
         print(self.title)
@@ -563,7 +490,7 @@ class Project:
         temp3 = {'ProjectID': self.__projectID,
                  'Title': self.title,
                  'Conclusion': 'None',
-                'Comments' : 'None', # ad
+                 'Comments': 'None',  # ad
                  'Status': 'None'  # for advisor
                  }
         self.__project.insert(temp)
@@ -589,10 +516,8 @@ class Project:
     def __check_status(self):
         status_proposal = self.__project_proposal.table[0]['Status']
         print(status_proposal)
-        # print(status_proposal)
         status_report = self.__project_report.table[0]['Status']
         print(status_report)
-        # print(1,status_proposal)
         if status_proposal == 'Approved' and status_report == 'Approved' and self.project_status == 'Approved':
             return True
         return False
@@ -600,15 +525,6 @@ class Project:
     def project_menu(self, my_project, pending_members):
         # print(self.__projectID, self.__project, self.title, self.lead, self.member1, self.member2, self.advisor)
         # make sure members have these attr too
-        for i in pending_members:
-            print(i)
-        print(pending_members)
-        print(44444, my_project.table)
-        print(44444,my_project.table[0]['ProjectID'])
-        # self.__initialization(my_project)
-        # print(self.__project)
-        # print(f'Welcome {self.name}!')
-        print(234, my_project)
         if self.__check_status():
             print('Your project was approved by your advisor')
 
@@ -643,14 +559,10 @@ class Project:
             self.modify_project(my_project, 'advisor')
 
         elif choice == '2':
-            # print(23243535, self.__project_proposal)
-            # print(23243535, self.__project_report)
-            # print(23243535, self.__project)
             print('Which status do you want to edit?')
             print('1.Proposal\n2.Report\n3.Project')
             choice = _check_input_v2(['1', '2', '3'], 'Action: ')
             if choice == '1':  # proposal
-                # print(f'Current project status: {self.project_status}')
                 print(f'Pick status')
                 print('1.Approve\n2.Decline')
                 _choice = _check_input_v2(['1', '2'], 'Action: ')
@@ -685,9 +597,6 @@ class Project:
                 else:
                     self.project_status = 'Declined'
                 self.__project.update('Status', self.project_status)
-            print(23243535, self.__project_proposal)
-            print(23243535, self.__project_report)
-            print(23243535, self.__project)
 
     def change_title(self):
         ask = input('Enter project name: ')
@@ -705,7 +614,7 @@ class Project:
         if self.__check_status():
             print('Please contact for evaluation process')
         for i in my_pending:
-            print(11,i)
+            print(11, i)
         if self.member1 == 'None' or self.member2 == 'None':
             print('Pending members...')
             print(self.__db.search('member_pending_request'))
@@ -721,16 +630,12 @@ class Project:
             for member in my_pending[1].table:
                 print(
                     f"Pending member: {member['to_be_advisor']}, Response: {member['Response']}, Response_date: {member['Response_date']}")
-        # else:
-        #     print('No pending member at the moment.')
-        # print('+------------------------------------+')
         elif self.member1 != 'None' and self.member2 != 'None' and self.advisor != 'None':
             print('Your project is ready to solicit an advisor!')
             self.change_project_status()
         print('+------------------------------------+')
 
     def view_project(self):  # advisor
-        # print(11111,self.__project_proposal)
         for txt in self.__project_proposal.table:
             print()
             print(
@@ -738,51 +643,40 @@ class Project:
             print(f"Comments: {txt['Comments']}\nStatus: {txt['Status']}")
 
     def modify_project(self, my_project, role=''):
-
         # Project table needs to be updated
         # project proposal
         if role == 'advisor':
             print('Editing project fields...')
             self.view_project()
             choice = _check_input_v2(['1', '2'], 'Add comments to, proposal(1)/ report(2): ')
-            my_proposal_ad = self.__project_proposal.filter(lambda x: x['ProjectID'] == my_project.table[0]['ProjectID'])
+            my_proposal_ad = self.__project_proposal.filter(
+                lambda x: x['ProjectID'] == my_project.table[0]['ProjectID'])
             my_report_ad = self.__project_report.filter(
                 lambda x: x['ProjectID'] == my_project.table[0]['ProjectID'])
             print(self.__project_proposal)
-            # print(33333,my_project)
             if choice == '1':
-                long_text(my_proposal_ad,'Comments')
+                long_text(my_proposal_ad, 'Comments')
                 print(self.__project_proposal)
             elif choice == '2':
                 long_text(my_report_ad, 'Comments')
                 print(self.__project_report)
 
-
-
-
-        # def long_text(my_table, header):
         else:
             while True:
-                # print(666,my_project)
-                # print(1234566, self.__project_proposal)
                 print('Which part do you want to modify?')
                 print("1.Proposal\n2.Report")  # comment and status are for advisor
                 pick = _check_input_v2(['1', '2'], 'Enter: ')
-                my_report = self.__project_report.filter(lambda x:x['ProjectID'] == my_project.table[0]['ProjectID'])
-                my_proposal = self.__project_proposal.filter(lambda x:x['ProjectID'] == my_project.table[0]['ProjectID'])
-                print(34,self.__project_proposal.filter(lambda x:x['ProjectID'] == my_project.table[0]['ProjectID']))
+                my_report = self.__project_report.filter(lambda x: x['ProjectID'] == my_project.table[0]['ProjectID'])
+                my_proposal = self.__project_proposal.filter(
+                    lambda x: x['ProjectID'] == my_project.table[0]['ProjectID'])
                 if pick == '1':
                     print('What field do you want to modify?')
                     print("1.Abstract\n2.Goals\n3.Timeline\n4.Budget")  # comment and status are for advisor
                     choice = _check_input_v2(['1', '2', '3', '4'], 'Action: ')
                     if choice == 'Q':
                         break
-                    # print(66666,self.__project_proposal.table['Timeline'])
                     if choice == '1':
-                        # my_proposal.update('Abstract')
                         long_text(my_proposal, 'Abstract')
-
-
                     elif choice == '2':
                         long_text(my_proposal, 'Goals')
                     elif choice == '3':
@@ -798,24 +692,16 @@ class Project:
     def projectID(self):
         return self.__projectID
 
-
 # make sure all project proposal and report approved
+
+
 class Evaluation(Mail):
-    # self.__eval_instance = Evaluation(self.__db, self.__faculty_info)
-
-    # def __init__(self,db,project):
-    #     self.__db = db
-    #     # self.__project = project
-    #     # self.__evaluation = self.__db.search('evaluation')
-
     def __init__(self, db):
         self.__db = db
         self.__evaluation = self.__db.search('evaluation')
 
-
-
-
-    def view_criteria(self):
+    @staticmethod
+    def view_criteria():
         print('-Criteria-')
         print("""-Functionality 20%
 -Creativity 20%
@@ -825,19 +711,17 @@ class Evaluation(Mail):
 Need 50% to pass the project""")
         print('+------------------------------------+')
 
-    def __check_eval_existance(self,this_ival_id):
-        if len(self.__evaluation.filter(lambda x:x['ProjectID'] == this_ival_id).table) == 0 :
-            return True # there is this eval somewhere
+    def __check_eval_existance(self, this_ival_id):
+        if len(self.__evaluation.filter(lambda x: x['ProjectID'] == this_ival_id).table) == 0:
+            return True  # there is this eval somewhere
         return False
 
     def rate_criteria(self, this_eval_project):  # passed
 
         this_eval_id = this_eval_project['ProjectID']
         this_eval_score_table = self.__evaluation.filter(lambda x: x['ProjectID'] == this_eval_id)
-        print(this_eval_score_table)
-        this_project = self.__db.search('project').filter(lambda x:x['ProjectID'] == this_eval_id)
-        print(400,this_project)
-        print(500,self.__evaluation)
+        this_project = self.__db.search('project').filter(lambda x: x['ProjectID'] == this_eval_id)
+
         temp = []
 
         for i in range(1, 21):
@@ -849,14 +733,14 @@ Need 50% to pass the project""")
         impact = _check_input(temp, 'Enter impact score(1-20%): ')
 
         temp2 = [int(functionality), int(creativity), int(effectiveness), int(relevance), int(impact)]
-        calculated = self.total(this_project, temp2)
+        calculated = Evaluation.total(temp2)
         if self.__check_eval_existance(this_eval_id):
             self.__evaluation.insert({'ProjectID': this_eval_id,
                                       'Functionality': functionality,
                                       'Creativity': creativity,
-                                      'Effectiveness':effectiveness,
+                                      'Effectiveness': effectiveness,
                                       'Relevance': relevance,
-                                    'Impact': impact,
+                                      'Impact': impact,
                                       'Total': calculated})
 
         else:
@@ -866,34 +750,24 @@ Need 50% to pass the project""")
             this_eval_score_table.update('Effectiveness', effectiveness)
             this_eval_score_table.update('Relevance', relevance)
             this_eval_score_table.update('Impact', impact)
-            calculated = self.total(this_project, temp2)
             this_eval_score_table.update('Total', calculated)
 
         if calculated > 50:
-            # print('passed')
-            # return True
+            print('passed')
             status = 'Passed'
             this_project.update('Status', status)
-            # print(this_project)
 
         else:
             print('fail')
             status = 'Failed'
             this_project.update('Status', status)
             print(this_project)
-            return False
 
-
-    def total(self,this_project, score):
+    @staticmethod
+    def total(score):
         total = sum(score)
-        print(total)
         print(f'Total score = {total}/100')
-        # this_project.update('Total', total)
         return total
-        # if total == 50:
-        #     return True  # passed
-        # return False
-
 
 
 class Student(Project, Mail):
@@ -916,13 +790,10 @@ class Student(Project, Mail):
         self.my_project = 'None'
 
     def find_pending_members(self, project_id):
-        # print(self.__member_pending)
-        # print(project_id)
         pending_members = self.__member_pending.filter(
             lambda x: x['Response'] == 'None').filter(lambda x: x['ProjectID'] == project_id)
         pending__advisor = self.__advisor_pending.filter(
             lambda x: x['Response'] == 'None').filter(lambda x: x['ProjectID'] == self.__projectID)
-        # print(2345,pending_members)
         temp = [pending_members, pending__advisor]
         return temp
 
@@ -938,7 +809,7 @@ class Student(Project, Mail):
             return True
         return False
 
-    def project_info(self): # need fix
+    def project_info(self):  # need fix
         print('All project', self.__project)
         member = 1  # someone who's not member does not work
         print(self.status)
@@ -981,30 +852,10 @@ class Student(Project, Mail):
             self.lead = self.name
             my_project, my_project_id = self.project_info()  # alr had project
             self.__initialization(my_project)
-        # print('info', self.__student_info)
-        # print(self.project)
-        # print(34577,my_project.table[0])
-        # print(self.status)
-
-        # print(self.__student_info)
-        # print(self.id, self.firstname, self.status)
-        # print(self.lead, self.member1, self.member2)
-
         while True:
-            # if not self.__check_status() and self.status != 'lead':  # alr had project
-            #     my_project, my_project_id = self.project_info()
-            #     # print(500,my_project)
-            #     self.__initialization(my_project)
             if not self.__check_status():  # alr had project
                 my_project, my_project_id = self.project_info()
-                # print(500,my_project)
                 self.__initialization(my_project)
-
-            # print(self.status)
-            print(self.__project)  # all projects
-            # print(self.__login_db)
-            print(self.__student_info)
-            print()
             print(f'Welcome {self.firstname} {self.lastname[0]}.')
             print('What do you want to do?')
             print('1.Create project\n2.My project\n3.Send invitation\n4.My mailbox')
@@ -1026,20 +877,14 @@ class Student(Project, Mail):
                     print('You already in existed project!')
             elif choice == '2':
                 if self.status != 'student':
-                    # print(77777, my_project_id, my_project)
-
-                    # print(self.lead)
-
                     print(f'Welcome {self.name}!')
                     pending_members = self.find_pending_members(my_project_id)
-                    print(111111,pending_members)
                     super().project_menu(my_project, pending_members)
                 else:
                     print("The project do not exists.")
                     print('Create project first.')
             elif choice == '3':
-                # print all students
-                # print(my_project_id)
+
                 if not self.__check_status() and self.status == 'lead':
                     self._mail_instance.send(my_project)
                 else:
@@ -1050,17 +895,11 @@ class Student(Project, Mail):
                     lambda x: x['to_be_member'] == self.__student_info['username']).filter(
                     lambda x: x['Response'] == 'None')
                 self._mail_instance.mailbox(self.status, __my_mail)
-
-            # print(self.__student_info)
-            # print(self.id, self.firstname, self.status)
-            # print(self.lead, self.member1, self.member2)
-            # print(self.project)
-            # print(self.__login_db)
-            # print(self.__student_info)
             print('+------------------------------------+')
 
-
 # Mail,Project,Evaluation
+
+
 class Faculty(Project):
     def __init__(self, db, info):
         # access self.DB self.member_pending
@@ -1079,17 +918,15 @@ class Faculty(Project):
         self.status = self.__faculty_info['role']
         if self.status == 'advisor':
             self.__project = db.search('project').filter(lambda x: x['Advisor'] == self.name)
-        self.__mail_instance = Mail(self.__db,self.__faculty_info)
+        self.__mail_instance = Mail(self.__db, self.__faculty_info)
         super().__init__(db)
-
-        self.__eval_instance = Evaluation(self.__db) # if broke
+        self.__eval_instance = Evaluation(self.__db)
 
     @property
     def db(self):
         return self.__db
+
     def view_my_project(self):
-        # print('1.My project\n2.Evaluate projects\n3.My mailbox')
-        # choice = _check_input_v2(['1', '2', '3'], 'Action: ')
         my_project = self.__project.filter(lambda x: x['Advisor'] == self.name)
         print('-My projects-')
         for project in my_project.table:
@@ -1108,18 +945,8 @@ class Faculty(Project):
                 return project
             print()
 
-        # print(my_project)
-
-    # def project_info(self):
-    #     print('All project', self.__project)
-    #     # print('is not lead')
-    #     _project_info = self.__project.filter(lambda x: x[f'Member{member}'] == self.name)
-    #     _project_id = _project_info.table[0]['ProjectID']
-    #     return _project_info, _project_id
-
-
     def __initialization(self, my_project):
-        print(43,self.title, self.member1, self.advisor, self.project_status)
+        print(43, self.title, self.member1, self.advisor, self.project_status)
         self.__project = my_project
         self.__projectID = self.__project.table[0]['ProjectID']
         self.title = self.__project.table[0]['Title']
@@ -1142,7 +969,7 @@ class Faculty(Project):
     def main(self):
         if self.status == 'advisor':
             self.__initialization(self.__project)
-        print('faculty',self.__faculty_info)
+        print('faculty', self.__faculty_info)
         print(self.__eval_projects)
         print(self.__db)
         print('status', self.status)
@@ -1162,7 +989,7 @@ class Faculty(Project):
             if choice == '1':
                 if self.status == 'advisor':
                     my_project = self.view_my_project()
-                    print(444,my_project)
+                    print(444, my_project)
                     print(f'Welcome {self.name}!')
                     super().project_menu_2(my_project)
                 else:
@@ -1172,47 +999,18 @@ class Faculty(Project):
                 __my_mail = self.__advisor_pending.filter(
                     lambda x: x['to_be_advisor'] == self.__faculty_info['username']).filter(
                     lambda x: x['Response'] == 'None')
-                status = self.__mail_instance.mailbox('faculty',__my_mail)
+                status = self.__mail_instance.mailbox('faculty', __my_mail)
                 if status:
                     self.status = 'advisor'
 
-
             if choice == '3':
-                # print(self.__eval_projects) # keep track
-                if Faculty.check_eval(self.__eval_projects):
-                    # print(self.__db.search('project'))
 
+                if Faculty.check_eval(self.__eval_projects):
                     project = self.pick_to_eval()
                     print(project)
-                    # print(project['ProjectID'])
-                    # self.eval_instance.view_criteria()
-                #
-                    project_score = self.__eval_instance.rate_criteria(project)
-                #     print(project)
-                #
-                #     print(project_score)
-                # else:
-                #     print('You have no permission to evaluate project')
+                    self.__eval_instance.view_criteria()
+                    self.__eval_instance.rate_criteria(project)
+                else:
+                    print('You have no permission to evaluate project')
 
             print('+------------------------------------+')
-
-
-            # if choice == '3':
-            #     # print(self.__eval_projects) # keep track
-            #     if Faculty.check_eval(self.__eval_projects):
-            #         # print(self.__db.search('project'))
-            #
-            #         project = self.pick_to_eval()
-            #         # print(project)
-            #         # print(project['ProjectID'])
-            #         eval_instance = Evaluation(self.__db, project)
-            #         eval_instance.view_criteria()
-            #
-            #         project_score = eval_instance.rate_criteria(self.__db, project['ProjectID'])
-            #         print(project)
-            #
-            #         print(project_score)
-            #     else:
-            #         print('You have no permission to evaluate project')
-            #
-            # print('+------------------------------------+')
