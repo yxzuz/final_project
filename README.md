@@ -1,22 +1,17 @@
 # Final project for 2023's 219114/115 Programming I
 * Starting files for part 1
   - advisor_pending_request.csv 
-    - Description: 
-    - Purposes:
+    - Description: keep track ad pending
   - database.py
-    - Description:
-    - Purposes:
+    - Description: method to use in all files
   - evaluation.csv
-    - Description:
-    - Purposes:
+    - Description: keep track of scores when evaluate
   - joined_person_loging.csv
-    - Description:
-    - Purposes:
+    - Description: for usage when needed mixed tables dta
   - login.csv
-    - Description:
-    - Purposes:
+    - Description: keep track of login data
   - mail.csv
-    - Description:
+    - Description: keep track of evaluate request to faculty
     - Purposes:
   - member_pending_request.csv
     - Description:
